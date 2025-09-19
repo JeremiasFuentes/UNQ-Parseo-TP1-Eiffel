@@ -12,7 +12,6 @@ Este proyecto implementa **sólo la etapa léxica** del lenguaje Eiffel. Bison s
     ├── hello.e
     └── tokens.e
 ```
-> En sistemas macOS puede que necesites `-ll` en lugar de `-lfl`. Edita el `Makefile` si fuera necesario.
 
 ## Cómo compilar
 ```bash
@@ -44,9 +43,3 @@ TOKEN_CLASS        -> class
 TOKEN_IDENTIFIER   -> HELLO_WORLD
 ...
 ```
-
-## Sugerencias para el Informe
-1. **Diseño del analizador**: explicar decisión de usar `%option caseless`, seguimiento de línea con `yylineno`, e impresión desde acciones léxicas.
-2. **Expresiones regulares**: justificar `ID`, `INTEGER`, `REAL` y `STRING` (doble comilla `""` y `%N`).
-3. **Compilación/Ejecución**: incluir capturas de `make` y ejecución sobre `tests/*.e`.
-4. **Reseña Eiffel**: incluir breve historia y referencias (agregar bibliografía).
