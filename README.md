@@ -17,12 +17,20 @@ Este proyecto implementa **sólo la etapa léxica** del lenguaje Eiffel. Bison s
 ```bash
 make
 ```
+### windows
+```bash
+.\compile.sh
+```
 
 ## Cómo ejecutar
 ```bash
 ./lexer tests/hello.e
 ./lexer tests/tokens.e
 ```
+### windows
+```bash
+.\out\lexer.exe .\tests\hello.e
+```       
 
 ## Qué cubre el analizador
 - Palabras reservadas: `class, inherit, feature, do, end, if, then, else, from, until, loop, create`.
