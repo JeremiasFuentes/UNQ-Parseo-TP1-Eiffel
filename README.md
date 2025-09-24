@@ -15,9 +15,16 @@ Este proyecto implementa **sólo la etapa léxica** del lenguaje Eiffel. Bison s
 
 ## Cómo compilar
 ```bash
+flex -l lexer.l
+bison -dv parser.y
+gcc -o lexer parser.tab.c lex.yy.c
+```
+
+### bash
+```bash
 make
 ```
-### windows
+### bash
 ```bash
 .\compile.sh
 ```
@@ -26,6 +33,7 @@ make
 ```bash
 ./lexer tests/hello.e
 ./lexer tests/tokens.e
+./lexer tests/calculadora.e
 ```
 ### windows
 ```bash

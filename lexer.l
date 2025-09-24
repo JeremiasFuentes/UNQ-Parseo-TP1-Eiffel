@@ -43,6 +43,8 @@ ID_CONT     [A-Za-z0-9_]
 "-"                                     { print_token("TOKEN_MINUS", yytext);   return TOKEN_MINUS; }
 "*"                                     { print_token("TOKEN_MUL", yytext);     return TOKEN_MUL; }
 "/"                                     { print_token("TOKEN_DIV", yytext);     return TOKEN_DIV; }
+":"                                     { print_token("TOKEN_COLON", yytext);   return TOKEN_COLON; }
+","                                     { print_token("TOKEN_COMMA", yytext);   return TOKEN_COMMA; }
 
 {DIGITS}"."{DIGITS}([eE][+-]?{DIGITS})?  { print_token("TOKEN_REAL", yytext);   return TOKEN_REAL; }
 {DIGITS}([eE][+-]?{DIGITS})              { print_token("TOKEN_REAL", yytext);   return TOKEN_REAL; }
@@ -54,5 +56,5 @@ ID_CONT     [A-Za-z0-9_]
 
 {WS}+                                   { /* ignorar espacios */ }
 
-.                                       { fprintf(stderr, "Línea %d: carácter no reconocido: %s\n", yylineno, yytext); }
+.                                       { fprintf(stderr, "Linea %d: caracter no reconocido: %s\n", yylineno, yytext); }
 %%
