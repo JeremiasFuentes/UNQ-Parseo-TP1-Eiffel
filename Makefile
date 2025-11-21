@@ -1,15 +1,38 @@
-CC ?= gcc
+CC = gcc
+FLEX = flex
+BISON = bison
+CFLAGS = -g -Wall
 
-all: lexer
+all: build
 
-lexer: parser.tab.c lex.yy.c
-	$(CC) -o $@ parser.tab.c lex.yy.c -lfl
+build: parser.c lexer.c ast.o symtab.o interpreter.o runtime.o
+	$(CC) $(CFLAGS) -o interpreter parser.c lexer.c ast.o symtab.o interpreter.o runtime.o -lfl
 
-parser.tab.c parser.tab.h: parser.y
-	bison -d -Wall -Wcounterexamples -o parser.tab.c parser.y
+parser.c: parser.y
+	$(BISON) -d -o parser.c parser.y
 
-lex.yy.c: lexer.l parser.tab.h
-	flex -o lex.yy.c lexer.l
+lexer.c: lexer.l parser.c
+	$(FLEX) -o lexer.c lexer.l
 
-clean:
-	rm -f lexer parser.tab.c parser.tab.h lex.yy.c
+ast.o: ast.c ast.h symtab.h
+	$(CC) $(CFLAGS) -c ast.c
+
+symtab.o: symtab.c symtab.h ast.h
+	$(CC) $(CFLAGS) -c symtab.c
+
+interpreter.o: interpreter.c ast.h symtab.h
+	$(CC) $(CFLAGS) -c interpreter.c
+
+runtime.o: runtime.c ast.h
+	$(CC) $(CFLAGS) -c runtime.c
+
+run: interpreter
+	@if [ -z "$(FILE)" ]; then echo "Usar: make run FILE=salidas/hello.e"; exit 1; fi
+	./interpreter $(FILE)
+
+tests: all
+	@echo "Ejecutando tests..."
+	@for f in salidas/*.e; do echo "---- $$f ----"; ./interpreter $$f; done
+
+clean: 
+	rm -f lexer lexer.exe parser.output parser.c parser.h parser.tab.c parser.tab.h lexer.c interpreter *.o

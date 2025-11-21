@@ -1,10 +1,13 @@
 %option noyywrap nodefault yylineno caseless
 %{
   #include <stdio.h>
-  #include "parser.tab.h"
+  #include "parser.h"
+  extern int yylineno;
+  void yyerror(const char *s);
 
   static void print_token(const char *name, const char *lexeme) {
-    printf("%-18s -> %s\n", name, lexeme);
+    /* descomentar si querés ver tokens */
+    /* printf("%-18s -> %s\n", name, lexeme); */
   }
 %}
 
@@ -12,8 +15,10 @@ WS          [ \t\r\n\f]+
 DIGITS      [0-9]+
 ID_START    [A-Za-z_]
 ID_CONT     [A-Za-z0-9_]
+STRING_CONTENT ([^\"\n]|\\\")*
 
 %%
+
 "--".*                                  { /* ignorar comentarios */ }
 
 "class"                                 { print_token("TOKEN_CLASS", yytext);   return TOKEN_CLASS; }
@@ -28,6 +33,8 @@ ID_CONT     [A-Za-z0-9_]
 "until"                                 { print_token("TOKEN_UNTIL", yytext);   return TOKEN_UNTIL; }
 "loop"                                  { print_token("TOKEN_LOOP", yytext);    return TOKEN_LOOP; }
 "create"                                { print_token("TOKEN_CREATE", yytext);  return TOKEN_CREATE; }
+"local"                                 { print_token("TOKEN_LOCAL", yytext);   return TOKEN_LOCAL; }
+"print"                                 { print_token("TOKEN_PRINT", yytext);   return TOKEN_PRINT; }
 
 ":="                                    { print_token("TOKEN_ASSIGN", yytext);  return TOKEN_ASSIGN; }
 "<="                                    { print_token("TOKEN_LE", yytext);      return TOKEN_LE; }
@@ -46,13 +53,42 @@ ID_CONT     [A-Za-z0-9_]
 ":"                                     { print_token("TOKEN_COLON", yytext);   return TOKEN_COLON; }
 ","                                     { print_token("TOKEN_COMMA", yytext);   return TOKEN_COMMA; }
 
-{DIGITS}"."{DIGITS}([eE][+-]?{DIGITS})?  { print_token("TOKEN_REAL", yytext);   return TOKEN_REAL; }
-{DIGITS}([eE][+-]?{DIGITS})              { print_token("TOKEN_REAL", yytext);   return TOKEN_REAL; }
-{DIGITS}                                 { print_token("TOKEN_INTEGER", yytext);return TOKEN_INTEGER; }
+{DIGITS}"."{DIGITS}([eE][+-]?{DIGITS})?  {
+                                           yylval.rval = atof(yytext);
+                                           print_token("TOKEN_REAL", yytext);
+                                           return TOKEN_REAL;
+                                         }
+{DIGITS}([eE][+-]?{DIGITS})              {
+                                           yylval.rval = atof(yytext);
+                                           print_token("TOKEN_REAL", yytext);
+                                           return TOKEN_REAL;
+                                         }
+{DIGITS}                                 {
+                                           yylval.ival = atoi(yytext);
+                                           print_token("TOKEN_INTEGER", yytext);
+                                           return TOKEN_INTEGER;
+                                         }
 
-\"([^\"\n]|\"\"|%[A-Za-z])*\"            { print_token("TOKEN_STRING", yytext); return TOKEN_STRING; }
+\"{STRING_CONTENT}\"                      {
+                                           // sacar comillas
+                                           int len = yyleng;
+                                           char *s = (char*)malloc(len-1);
+                                           int i,j=0;
+                                           for(i=1;i<yyleng-1;i++){
+                                             if(yytext[i]=='\\' && yytext[i+1]=='"'){ s[j++]='"'; i++; }
+                                             else s[j++]=yytext[i];
+                                           }
+                                           s[j]=0;
+                                           yylval.str = s;
+                                           print_token("TOKEN_STRING", s);
+                                           return TOKEN_STRING;
+                                         }
 
-{ID_START}{ID_CONT}*                    { print_token("TOKEN_IDENTIFIER", yytext); return TOKEN_IDENTIFIER; }
+{ID_START}{ID_CONT}*                    {
+                                           yylval.str = strdup(yytext);
+                                           print_token("TOKEN_IDENTIFIER", yytext);
+                                           return TOKEN_IDENTIFIER;
+                                         }
 
 {WS}+                                   { /* ignorar espacios */ }
 
