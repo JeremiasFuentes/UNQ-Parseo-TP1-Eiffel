@@ -36,7 +36,7 @@ run: interpreter
 	./interpreter $(FILE)
 
 clean:
-	rm -f interpreter parser.tab.c parser.tab.h parser.output lex.yy.c *.o
+	rm -f interpreter interpreter.exe parser.tab.c parser.tab.h parser.output lex.yy.c *.o
 
 .PHONY: tests
 
