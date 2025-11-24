@@ -7,12 +7,18 @@ CFLAGS=-Wall -Wextra -std=c11 -g
 
 OBJS=parser.tab.o lex.yy.o ast.o symtab.o runtime.o interpreter.o
 
+ifeq ($(OS),Windows_NT)
+    interpreter_bin := interpreter.exe
+else
+    interpreter_bin := interpreter
+endif
+
 all: interpreter
 
 build: interpreter
 
 interpreter: $(OBJS)
-	$(CC) $(CFLAGS) -o interpreter $(OBJS)
+	$(CC) $(CFLAGS) -o $(interpreter_bin) $(OBJS)
 
 parser.tab.c parser.tab.h: parser.y
 	$(BISON) -dv parser.y -o parser.tab.c
@@ -33,10 +39,10 @@ interpreter.o: interpreter.c ast.h symtab.h runtime.h
 	$(CC) $(CFLAGS) -c interpreter.c
 
 run: interpreter
-	./interpreter $(FILE)
+	./$(interpreter_bin) $(FILE)
 
 clean:
-	rm -f interpreter interpreter.exe parser.tab.c parser.tab.h parser.output lex.yy.c *.o
+	rm -f $(interpreter_bin) parser.tab.c parser.tab.h parser.output lex.yy.c *.o
 
 .PHONY: tests
 
@@ -53,7 +59,7 @@ tests: interpreter
 		fi; \
 		name=$$(basename "$$testfile"); \
 		# Normalizamos salida igual que en regen \
-		got=$$(./interpreter "$$testfile" 2>&1 | tr -d '\r' | awk 'NR==1{printf "%s", $$0; next}{printf "\\n%s", $$0} END{print ""}'); \
+		got=$$(./$(interpreter_bin) "$$testfile" 2>&1 | tr -d '\r' | awk 'NR==1{printf "%s", $$0; next}{printf "\\n%s", $$0} END{print ""}'); \
 		exp=$$(sed -n "$${ln}p" salidas_esperadas.txt | tr -d '\r'); \
 		printf "Test %s (%s): " "$$i" "$$name"; \
 		if [ "$$got" = "$$exp" ]; then \
@@ -89,7 +95,7 @@ regen: interpreter
 			continue; \
 		fi; \
 		# Ejecutamos el intérprete, borramos \r y unimos líneas con \\n usando awk \
-		got=$$(./interpreter "$$testfile" 2>&1 | tr -d '\r' | awk 'NR==1{printf "%s", $$0; next}{printf "\\n%s", $$0} END{print ""}'); \
+		got=$$(./$(interpreter_bin) "$$testfile" 2>&1 | tr -d '\r' | awk 'NR==1{printf "%s", $$0; next}{printf "\\n%s", $$0} END{print ""}'); \
 		echo "$$got" >> salidas_esperadas.txt; \
 		echo "Generado salida $$i: $$got"; \
 	done

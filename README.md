@@ -38,7 +38,17 @@ make
 ### windows
 ```bash
 .\out\lexer.exe .\tests\hello.e
-```       
+```
+
+### Ejecutar interprete
+```bash
+make run FILE=./examples/01_hello.e
+```
+
+### Ejecutar tests
+```bash
+make tests
+```
 
 ## Qué cubre el analizador
 - Palabras reservadas: `class, inherit, feature, do, end, if, then, else, from, until, loop, create`.
