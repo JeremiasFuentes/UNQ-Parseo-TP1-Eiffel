@@ -66,31 +66,48 @@ extern int yydebug;
     TOKEN_UNTIL = 267,             /* TOKEN_UNTIL  */
     TOKEN_LOOP = 268,              /* TOKEN_LOOP  */
     TOKEN_CREATE = 269,            /* TOKEN_CREATE  */
-    TOKEN_IDENTIFIER = 270,        /* TOKEN_IDENTIFIER  */
-    TOKEN_INTEGER = 271,           /* TOKEN_INTEGER  */
-    TOKEN_REAL = 272,              /* TOKEN_REAL  */
-    TOKEN_STRING = 273,            /* TOKEN_STRING  */
-    TOKEN_ASSIGN = 274,            /* TOKEN_ASSIGN  */
+    TOKEN_LOCAL = 270,             /* TOKEN_LOCAL  */
+    TOKEN_PRINT = 271,             /* TOKEN_PRINT  */
+    TOKEN_ASSIGN = 272,            /* TOKEN_ASSIGN  */
+    TOKEN_LE = 273,                /* TOKEN_LE  */
+    TOKEN_GE = 274,                /* TOKEN_GE  */
     TOKEN_EQUAL = 275,             /* TOKEN_EQUAL  */
     TOKEN_LT = 276,                /* TOKEN_LT  */
     TOKEN_GT = 277,                /* TOKEN_GT  */
-    TOKEN_LE = 278,                /* TOKEN_LE  */
-    TOKEN_GE = 279,                /* TOKEN_GE  */
-    TOKEN_LPAREN = 280,            /* TOKEN_LPAREN  */
-    TOKEN_RPAREN = 281,            /* TOKEN_RPAREN  */
-    TOKEN_SEMI = 282,              /* TOKEN_SEMI  */
-    TOKEN_DOT = 283,               /* TOKEN_DOT  */
-    TOKEN_PLUS = 284,              /* TOKEN_PLUS  */
-    TOKEN_MINUS = 285,             /* TOKEN_MINUS  */
-    TOKEN_MUL = 286,               /* TOKEN_MUL  */
-    TOKEN_DIV = 287                /* TOKEN_DIV  */
+    TOKEN_LPAREN = 278,            /* TOKEN_LPAREN  */
+    TOKEN_RPAREN = 279,            /* TOKEN_RPAREN  */
+    TOKEN_SEMI = 280,              /* TOKEN_SEMI  */
+    TOKEN_DOT = 281,               /* TOKEN_DOT  */
+    TOKEN_PLUS = 282,              /* TOKEN_PLUS  */
+    TOKEN_MINUS = 283,             /* TOKEN_MINUS  */
+    TOKEN_MUL = 284,               /* TOKEN_MUL  */
+    TOKEN_DIV = 285,               /* TOKEN_DIV  */
+    TOKEN_COLON = 286,             /* TOKEN_COLON  */
+    TOKEN_COMMA = 287,             /* TOKEN_COMMA  */
+    TOKEN_IDENTIFIER = 288,        /* TOKEN_IDENTIFIER  */
+    TOKEN_INTEGER = 289,           /* TOKEN_INTEGER  */
+    TOKEN_REAL = 290,              /* TOKEN_REAL  */
+    TOKEN_STRING = 291,            /* TOKEN_STRING  */
+    UMINUS = 292                   /* UMINUS  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 29 "parser.y"
+
+    long ival;
+    double rval;
+    char *sval;
+    ASTNode *node;
+
+#line 108 "parser.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

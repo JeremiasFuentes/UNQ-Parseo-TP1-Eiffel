@@ -1,0 +1,11 @@
+Hola, mundo Eiffel!
+7
+15
+positivo
+0\n1\n2
+0\n1\n1\n2\n3\n5
+120
+Hola mundo\nnúmero:  42
+6
+Runtime/Semantic error: variable 'x' not declared (line 6)
+Runtime/Semantic error: type error: expected INTEGER for variable 'x' (line 8)
