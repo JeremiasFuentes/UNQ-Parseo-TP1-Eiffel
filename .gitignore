@@ -1,1 +1,14 @@
 out/
+
+lexer 
+lexer.exe 
+lex.yy.c 
+parser.output 
+parser.c 
+parser.h 
+parser.tab.c 
+parser.tab.h 
+lexer.c 
+interpreter 
+interpreter.exe 
+*.o
