@@ -9,6 +9,7 @@ OBJS=parser.tab.o lex.yy.o ast.o symtab.o runtime.o interpreter.o
 
 ifeq ($(OS),Windows_NT)
     interpreter_bin := interpreter.exe
+    SHELL := ~/scoop/apps/git/current/usr/bin/bash.exe
 else
     interpreter_bin := interpreter
 endif
@@ -63,9 +64,9 @@ tests: interpreter
 		exp=$$(sed -n "$${ln}p" salidas_esperadas.txt | tr -d '\r'); \
 		printf "Test %s (%s): " "$$i" "$$name"; \
 		if [ "$$got" = "$$exp" ]; then \
-			echo "OK ✅"; \
+			echo "OK"; \
 		else \
-			echo "FAIL ❌"; \
+			echo "FAIL"; \
 			echo "  Esperado: '$$exp'"; \
 			echo "  Obtenido: '$$got'"; \
 			fails=$$((fails+1)); \
@@ -73,9 +74,9 @@ tests: interpreter
 		ln=$$((ln+1)); \
 	done; \
 	if [ $$fails -eq 0 ]; then \
-		echo "== Todos los tests pasaron ✅ =="; \
+		echo "== Todos los tests pasaron =="; \
 	else \
-		echo "== $$fails tests fallaron ❌ =="; \
+		echo "== $$fails tests fallaron =="; \
 		exit 1; \
 	fi
 
@@ -99,5 +100,4 @@ regen: interpreter
 		echo "$$got" >> salidas_esperadas.txt; \
 		echo "Generado salida $$i: $$got"; \
 	done
-	@echo "== salidas_esperadas.txt generado ✅ =="
-
+	@echo "== salidas_esperadas.txt generado =="
