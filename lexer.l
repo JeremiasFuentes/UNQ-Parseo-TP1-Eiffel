@@ -13,6 +13,12 @@ extern int yylineno;
 %option yylineno
 %option caseless
 
+WS             [ \t\r\n\f]+
+DIGIT          [0-9]
+ID_START       [A-Za-z_]
+ID_CONT        [A-Za-z0-9_]
+STRING_CONTENT ([^\"\n]|\\\")*
+
 %%
 
 "class"        { return TOKEN_CLASS; }
@@ -47,17 +53,22 @@ extern int yylineno;
 ":"            { return TOKEN_COLON; }
 ","            { return TOKEN_COMMA; }
 
-[0-9]+"."[0-9]*([eE][+-]?[0-9]+)? {
+{DIGIT}+"."{DIGIT}*([eE][+-]?{DIGIT}+)? {
     yylval.rval = strtod(yytext, NULL);
     return TOKEN_REAL;
 }
 
-[0-9]+ {
+{DIGIT}+([eE][+-]?{DIGIT}+) {
+    yylval.rval = strtod(yytext, NULL);
+    return TOKEN_REAL;
+}
+
+{DIGIT}+ {
     yylval.ival = strtol(yytext, NULL, 10);
     return TOKEN_INTEGER;
 }
 
-[A-Za-z_][A-Za-z_0-9]* {
+{ID_START}{ID_CONT}* {
     size_t len = yyleng;
     char *buf = (char*)malloc(len + 1);
     if (!buf) {
@@ -70,7 +81,7 @@ extern int yylineno;
     return TOKEN_IDENTIFIER;
 }
 
-\"[^"\n]*\" {
+\"{STRING_CONTENT}\" {
     size_t len = yyleng;
     char *buf = (char*)malloc(len - 1);
     memcpy(buf, yytext + 1, len - 2);
@@ -83,7 +94,7 @@ extern int yylineno;
     /* skip comment */
 }
 
-[ \t\r\n]+ {
+{WS}+ {
     /* skip whitespace */
 }
 
