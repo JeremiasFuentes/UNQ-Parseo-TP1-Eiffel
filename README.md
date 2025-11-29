@@ -24,10 +24,6 @@ gcc -o lexer parser.tab.c lex.yy.c
 ```bash
 make
 ```
-### bash
-```bash
-.\compile.sh
-```
 
 ## Cómo ejecutar
 ```bash
@@ -35,19 +31,14 @@ make
 ./lexer tests/tokens.e
 ./lexer tests/calculadora.e
 ```
-### windows
-```bash
-.\out\lexer.exe .\tests\hello.e
-```
 
-### Ejecutar interprete
+### Comandos Makefile
 ```bash
-make run FILE=./examples/01_hello.e
-```
-
-### Ejecutar tests
-```bash
-make tests
+make # Compilar
+make tests # Ejecutar tests de la carpeta 'examples'
+make run FILE=./examples/01_hello.e # Ejecutar interprete para el archivo proporcionado
+make run FILE=./examples/05_loop_until.e ACTION=lex # Ejecutar parser para archivo e imprimir lexemas reconocidos
+make run FILE=./examples/05_loop_until.e ACTION=ast # Ejecutar parser para archivo e imprimir AST generado
 ```
 
 ## Qué cubre el analizador

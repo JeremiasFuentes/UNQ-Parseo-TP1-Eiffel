@@ -5,11 +5,11 @@ NTESTS = 11
 
 CFLAGS=-Wall -Wextra -std=c11 -g
 
-OBJS=parser.tab.o lex.yy.o ast.o symtab.o runtime.o interpreter.o
+OBJS=parser.tab.o lex.yy.o ast.o symtab.o runtime.o interpreter.o debug.o
 
 ifeq ($(OS),Windows_NT)
     interpreter_bin := interpreter.exe
-    SHELL := ~/scoop/apps/git/current/usr/bin/bash.exe
+    SHELL := ~/scoop/apps/git/current/git-bash.exe
 else
     interpreter_bin := interpreter
 endif
@@ -40,7 +40,7 @@ interpreter.o: interpreter.c ast.h symtab.h runtime.h
 	$(CC) $(CFLAGS) -c interpreter.c
 
 run: interpreter
-	./$(interpreter_bin) $(FILE)
+	./$(interpreter_bin) $(FILE) $(ACTION)
 
 clean:
 	rm -f $(interpreter_bin) parser.tab.c parser.tab.h parser.output lex.yy.c *.o

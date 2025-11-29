@@ -4,6 +4,11 @@
 #include <string.h>
 #include "symtab.h"
 #include "runtime.h"
+#include "print_ast.c"
+#include "debug.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 extern int yyparse(void);
 extern FILE *yyin;
@@ -264,10 +269,35 @@ static Value eval_expr(ASTNode *expr, Env *env) {
     return make_int(0);
 }
 
+/* Acción por defecto: ejecutar todo */
+enum { ACT_FULL, ACT_LEX, ACT_PARSE, ACT_AST, ACT_INTERP } mode = ACT_FULL;
+
 int main(int argc, char **argv) {
+    #ifdef _WIN32
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
+    #endif
+
     if (argc < 2) {
         fprintf(stderr, "Usage: %s file.e\n", argv[0]);
         return EXIT_FAILURE;
+    }
+
+    if (argc >= 3) {
+        const char *action = argv[2];
+
+        if (strcmp(action, "lex") == 0) {
+            debug_print_tokens = true;
+            mode = ACT_LEX;
+        } else if (strcmp(action, "parse") == 0) {
+            mode = ACT_PARSE; // No usado
+        } else if (strcmp(action, "ast") == 0) {
+            mode = ACT_AST;
+        } else if (strcmp(action, "interp") == 0) {
+            mode = ACT_INTERP; // No usado
+        } else {
+            fprintf(stderr, "Warning: action '%s' not recognized, executing all steps.\n", action);
+        }
     }
 
     yyin = fopen(argv[1], "r");
@@ -282,6 +312,10 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     fclose(yyin);
+    
+    if (mode == ACT_LEX) {
+        return 0;
+    }
 
     if (!ast_root || ast_root->type != AST_PROGRAM) {
         fprintf(stderr, "No valid program parsed.\n");
@@ -298,6 +332,11 @@ int main(int argc, char **argv) {
     if (!feat || feat->type != AST_FEATURE) {
         fprintf(stderr, "Expected a feature make.\n");
         return EXIT_FAILURE;
+    }
+    
+    if (mode == ACT_AST) {
+        print_ast(ast_root);
+        return 0;
     }
 
     Env *global = env_new(NULL);
