@@ -39,6 +39,7 @@ make tests # Ejecutar tests de la carpeta 'examples'
 make run FILE=./examples/01_hello.e # Ejecutar interprete para el archivo proporcionado
 make run FILE=./examples/05_loop_until.e ACTION=lex # Ejecutar parser para archivo e imprimir lexemas reconocidos
 make run FILE=./examples/05_loop_until.e ACTION=ast # Ejecutar parser para archivo e imprimir AST generado
+make run FILE=./examples/05_loop_until.e ACTION=env # Interpreta el archivo e imprimir las modificaciones del Entorno
 ```
 
 ## Qué cubre el analizador

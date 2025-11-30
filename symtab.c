@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "debug.h"
 
 static char *xstrdup(const char *s) {
     if (!s) return NULL;
@@ -31,15 +32,18 @@ Env *env_new(Env *parent) {
     if (!env) return NULL;
     env->parent = parent;
     env->vars = NULL;
+    print_env_action("env_new", "");
     return env;
 }
 
 void env_free(Env *env) {
     (void)env;
+    print_env_action("env_free", "");
 }
 
 void env_declare(Env *env, const char *name, const char *type_name) {
     VarEntry *v = malloc(sizeof(VarEntry));
+    print_env_action("env_declare", name);
     if (!v) {
         perror("malloc");
         exit(EXIT_FAILURE);
@@ -67,6 +71,7 @@ static VarEntry *lookup_chain(Env *env, const char *name) {
 
 void env_assign(Env *env, const char *name, Value v, int line) {
     VarEntry *cur = env->vars;
+    print_env_action("env_assign", name);
     while (cur) {
         if (strcmp(cur->name, name) == 0) {
 
@@ -95,6 +100,7 @@ void env_assign(Env *env, const char *name, Value v, int line) {
 }
 
 Value env_lookup(Env *env, const char *name, int line) {
+    print_env_action("env_lookup", name);
     VarEntry *v = lookup_chain(env, name);
     if (!v) {
         rt_runtime_error(line, "variable '%s' not declared", name);

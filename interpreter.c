@@ -270,7 +270,7 @@ static Value eval_expr(ASTNode *expr, Env *env) {
 }
 
 /* Acción por defecto: ejecutar todo */
-enum { ACT_FULL, ACT_LEX, ACT_PARSE, ACT_AST, ACT_INTERP } mode = ACT_FULL;
+enum { ACT_FULL, ACT_LEX, ACT_PARSE, ACT_AST, ACT_ENV } mode = ACT_FULL;
 
 int main(int argc, char **argv) {
     #ifdef _WIN32
@@ -293,8 +293,9 @@ int main(int argc, char **argv) {
             mode = ACT_PARSE; // No usado
         } else if (strcmp(action, "ast") == 0) {
             mode = ACT_AST;
-        } else if (strcmp(action, "interp") == 0) {
-            mode = ACT_INTERP; // No usado
+        } else if (strcmp(action, "env") == 0) {
+            debug_print_env_actions = true;
+            mode = ACT_ENV;
         } else {
             fprintf(stderr, "Warning: action '%s' not recognized, executing all steps.\n", action);
         }
