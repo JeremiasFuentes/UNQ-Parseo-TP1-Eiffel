@@ -61,3 +61,55 @@ TOKEN_CLASS        -> class
 TOKEN_IDENTIFIER   -> HELLO_WORLD
 ...
 ```
+
+## Gramatica definida
+```
+program         → class_def
+                | program class_def
+class_def       → TOKEN_CLASS TOKEN_IDENTIFIER feature_block TOKEN_END
+feature_block   → TOKEN_FEATURE feature_list
+feature_list    → feature_or_attr
+                | feature_list feature_or_attr
+feature_or_attr → TOKEN_IDENTIFIER TOKEN_COLON TOKEN_IDENTIFIER
+                | TOKEN_IDENTIFIER TOKEN_COLON TOKEN_IDENTIFIER TOKEN_SEMI
+                | feature
+feature         → TOKEN_IDENTIFIER opt_locals TOKEN_DO stmt_list TOKEN_END
+opt_locals      → ε
+                | TOKEN_LOCAL local_decl_list
+local_decl_list → local_decl
+                | local_decl_list local_decl
+local_decl      → id_list TOKEN_COLON TOKEN_IDENTIFIER
+                | id_list TOKEN_COLON TOKEN_IDENTIFIER TOKEN_SEMI
+id_list         → TOKEN_IDENTIFIER
+                | id_list TOKEN_COMMA TOKEN_IDENTIFIER
+stmt_list       → ε
+                | stmt_item
+                | stmt_list stmt_item
+stmt_item       → stmt
+                | stmt TOKEN_SEMI
+stmt            → TOKEN_IDENTIFIER TOKEN_ASSIGN expr
+                | if_stmt
+                | loop_stmt
+                | print_stmt
+                | TOKEN_CREATE TOKEN_IDENTIFIER
+                | TOKEN_IDENTIFIER TOKEN_DOT TOKEN_IDENTIFIER TOKEN_ASSIGN expr
+                | TOKEN_IDENTIFIER TOKEN_DOT TOKEN_IDENTIFIER
+if_stmt         → TOKEN_IF expr TOKEN_THEN stmt_list TOKEN_ELSE stmt_list TOKEN_END
+                | TOKEN_IF expr TOKEN_THEN stmt_list TOKEN_END
+loop_stmt       → TOKEN_FROM stmt_list TOKEN_UNTIL expr TOKEN_LOOP stmt_list TOKEN_END
+print_stmt      → TOKEN_PRINT TOKEN_LPAREN expr TOKEN_RPAREN
+expr            → expr TOKEN_PLUS expr
+                | expr TOKEN_MINUS expr
+                | expr TOKEN_MUL expr
+                | expr TOKEN_DIV expr
+                | expr TOKEN_EQUAL expr
+                | expr TOKEN_LT expr
+                | expr TOKEN_GT expr
+                | expr TOKEN_LE expr
+                | expr TOKEN_GE expr
+                | TOKEN_MINUS expr %prec UMINUS
+                | TOKEN_LPAREN expr TOKEN_RPAREN
+                | TOKEN_INTEGER
+                | TOKEN_STRING
+                | TOKEN_IDENTIFIER TOKEN_DOT TOKEN_IDENTIFIER
+```
